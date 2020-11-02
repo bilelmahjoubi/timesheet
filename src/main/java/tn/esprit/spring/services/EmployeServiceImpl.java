@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,8 +23,6 @@ import tn.esprit.spring.repository.TimesheetRepository;
 
 @Service
 public class EmployeServiceImpl implements IEmployeService {
-	
-
 
 	@Autowired
 	EmployeRepository employeRepository;
@@ -32,10 +32,15 @@ public class EmployeServiceImpl implements IEmployeService {
 	ContratRepository contratRepoistory;
 	@Autowired
 	TimesheetRepository timesheetRepository;
+	
+	private static final Logger l = LogManager.getLogger(EmployeServiceImpl.class);
 
 	@Override
 	public Employe authenticate(String login, String password) {
-		return employeRepository.getEmployeByEmailAndPassword(login, password);
+		l.info("In  authenticate : ");
+		Employe emp = employeRepository.getEmployeByEmailAndPassword(login, password); 
+		l.info("Out  authenticate : ");
+		return emp ;
 	}
 
 	@Override
@@ -56,64 +61,78 @@ public class EmployeServiceImpl implements IEmployeService {
 
 	@Transactional	
 	public void affecterEmployeADepartement(int employeId, int depId) {
-		Departement depManagedEntity = deptRepoistory.findById(depId).orElse(null);
-		Employe employeManagedEntity = employeRepository.findById(employeId).orElse(null);
-
-		if(depManagedEntity!=null && employeManagedEntity!=null) {
-			if(depManagedEntity.getEmployes() == null){
-
-				List<Employe> employes = new ArrayList<>();
-				employes.add(employeManagedEntity);
-				depManagedEntity.setEmployes(employes);
-			}else{
-
-				depManagedEntity.getEmployes().add(employeManagedEntity);
-			}
-			deptRepoistory.save(depManagedEntity); 
-		}
+		l.info("In  affecterEmployeADepartement : ");
+		Departement depManagedEntity = deptRepoistory.findById(depId).get();
 		
+		Employe employeManagedEntity = employeRepository.findById(employeId).get();
+
+		if(depManagedEntity.getEmployes() == null){
+			l.info("No employe found in this departement ");
+
+			List<Employe> employes = new ArrayList<>();
+			employes.add(employeManagedEntity);
+			depManagedEntity.setEmployes(employes);
+		}else{
+
+			depManagedEntity.getEmployes().add(employeManagedEntity);
+			l.debug("Employe: " + employeId + "affecter a" + depId);
+		}
+
+		// à ajouter? 
+		deptRepoistory.save(depManagedEntity); 
+		l.info("Out  affecterEmployeADepartement : ");
 
 	}
 	@Transactional
 	public void desaffecterEmployeDuDepartement(int employeId, int depId)
 	{
-		Departement dep = deptRepoistory.findById(depId).orElse(null);
-		if(dep!=null) {
-			int employeNb = dep.getEmployes().size();
-			for(int index = 0; index < employeNb; index++){
-				if(dep.getEmployes().get(index).getId() == employeId){
-					dep.getEmployes().remove(index);
-					break;
-				}
+		l.info("In  desaffecterEmployeDuDepartement : ");
+		Departement dep = deptRepoistory.findById(depId).get();
+
+		int employeNb = dep.getEmployes().size();
+		l.debug("emplyeNB : "+employeNb);
+		for(int index = 0; index < employeNb; index++){
+			
+			if(dep.getEmployes().get(index).getId() == employeId){
+				dep.getEmployes().remove(index);
+				l.debug("index +++ : " + index);
+				l.info("employe removed ");
+				
+				break;//a revoir
 			}
 		}
-		
+		l.info("Out  desaffecterEmployeDuDepartement : ");
 	} 
 	
 	// Tablesapce (espace disque) 
 
 	public int ajouterContrat(Contrat contrat) {
+		l.info("In  ajouterContrat : ");
 		contratRepoistory.save(contrat);
-		return contrat.getReference();
+		
+		int x =		contrat.getReference();
+		l.debug("contract reference" + x);
+		l.info("In  ajouterContrat : ");		
+		return	x ;	
 	}
 
 	public void affecterContratAEmploye(int contratId, int employeId) {
-		Contrat contratManagedEntity = contratRepoistory.findById(contratId).orElse(null);
-		Employe employeManagedEntity = employeRepository.findById(employeId).orElse(null);
-		if(contratManagedEntity!=null && employeManagedEntity!=null) {
-			contratManagedEntity.setEmploye(employeManagedEntity);
-		}
-		contratRepoistory.save(contratManagedEntity);
+		l.info("In  affecterContratAEmploye : ");
+		Contrat contratManagedEntity = contratRepoistory.findById(contratId).get();
+		Employe employeManagedEntity = employeRepository.findById(employeId).get();
 
+		contratManagedEntity.setEmploye(employeManagedEntity);
+		contratRepoistory.save(contratManagedEntity);
+		l.info("Out  affecterContratAEmploye : ");
 	}
 
 	public String getEmployePrenomById(int employeId) {
-		Employe employeManagedEntity = employeRepository.findById(employeId).orElse(null);
-		if(employeManagedEntity!=null) {
-			return employeManagedEntity.getPrenom();
-		}
-		return "Nothing found";
-
+		l.info("In  getEmployePrenomById : ");
+		Employe employeManagedEntity = employeRepository.findById(employeId).get();
+		String emp = employeManagedEntity.getPrenom();
+		l.info("Out  getEmployePrenomById : ");
+		 return emp;
+		 
 	}
 	 
 	public Boolean deleteEmployeById(int employeId)
@@ -138,49 +157,73 @@ public class EmployeServiceImpl implements IEmployeService {
 	}
 
 	public void deleteContratById(int contratId) {
-		Contrat contratManagedEntity = contratRepoistory.findById(contratId).orElse(null);
-		if(contratManagedEntity!=null) {
-			contratRepoistory.delete(contratManagedEntity);
-		}
-
+		l.info("In  deleteContratById : ");
+		Contrat contratManagedEntity = contratRepoistory.findById(contratId).get();
+		contratRepoistory.delete(contratManagedEntity);
+		l.info("Out  deleteContratById : ");
 	}
 
 	public int getNombreEmployeJPQL() {
-		return employeRepository.countemp();
+		l.info("In  getNombreEmployeJPQL : ");
+		int x = employeRepository.countemp();
+		l.debug("NombreEmploye :" +x);
+		l.info("Out  getNombreEmployeJPQL : ");
+		 return x ;
 	}
 
 	public List<String> getAllEmployeNamesJPQL() {
-		return employeRepository.employeNames();
+		l.info("In  getAllEmployeNamesJPQL : ");
+		List<String> x =	 employeRepository.employeNames();
+		l.info("Out  getAllEmployeNamesJPQL : ");
+		 return x;
 
 	}
 
 	public List<Employe> getAllEmployeByEntreprise(Entreprise entreprise) {
-		return employeRepository.getAllEmployeByEntreprisec(entreprise);
+		l.info("In  getAllEmployeByEntreprise : ");
+		List<Employe> x = employeRepository.getAllEmployeByEntreprisec(entreprise);
+		l.info("Out  getAllEmployeByEntreprise : ");
+		return x;
 	}
 
 	public void mettreAjourEmailByEmployeIdJPQL(String email, int employeId) {
+		l.info("In  mettreAjourEmailByEmployeIdJPQL : ");
 		employeRepository.mettreAjourEmailByEmployeIdJPQL(email, employeId);
+		l.info("Out  mettreAjourEmailByEmployeIdJPQL : ");
 
 	}
 	public void deleteAllContratJPQL() {
+		l.info("In  deleteAllContratJPQL : ");
 		employeRepository.deleteAllContratJPQL();
+		l.info("Out  deleteAllContratJPQL : ");
 	}
 
 	public float getSalaireByEmployeIdJPQL(int employeId) {
-		return employeRepository.getSalaireByEmployeIdJPQL(employeId);
+		l.info("In  getSalaireByEmployeIdJPQL : ");
+		float x = employeRepository.getSalaireByEmployeIdJPQL(employeId);
+		l.info("Out  getSalaireByEmployeIdJPQL : ");
+		 return x;
 	}
 
 	public Double getSalaireMoyenByDepartementId(int departementId) {
-		return employeRepository.getSalaireMoyenByDepartementId(departementId);
+		l.info("In  getSalaireMoyenByDepartementId : ");
+		Double x= employeRepository.getSalaireMoyenByDepartementId(departementId);
+		l.info("Out  getSalaireMoyenByDepartementId : ");
+		return x ;
 	}
 
 	public List<Timesheet> getTimesheetsByMissionAndDate(Employe employe, Mission mission, Date dateDebut,
 			Date dateFin) {
-		return timesheetRepository.getTimesheetsByMissionAndDate(employe, mission, dateDebut, dateFin);
+		l.info("In  getTimesheetsByMissionAndDate : ");
+		List<Timesheet> x= timesheetRepository.getTimesheetsByMissionAndDate(employe, mission, dateDebut, dateFin);
+		l.info("In  getTimesheetsByMissionAndDate : ");
+		return x ;
 	}
 
 	public List<Employe> getAllEmployes() {
-		return (List<Employe>) employeRepository.findAll();
+		l.info("In  getAllEmployes : ");
+		List<Employe> x = (List<Employe>) employeRepository.findAll();
+		l.info("Out  getAllEmployes : ");
+		return x ;
 	}
 
-}
