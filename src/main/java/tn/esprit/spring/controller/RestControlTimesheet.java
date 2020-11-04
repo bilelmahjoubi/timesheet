@@ -30,13 +30,13 @@ public class RestControlTimesheet {
 	@Autowired
 	ITimesheetService itimesheetservice;
 	@Autowired
-	TimesheetMapper tm;
+	TimesheetMapper tm2;
 	
 	// http://localhost:8081/SpringMVC/servlet/ajouterMission
 	@PostMapping("/ajouterMission")
 	@ResponseBody
 	public int ajouterMission(@RequestBody MissionDTO mission) {
-		Mission m = tm.mapMissionDtoToMission(mission);
+		Mission m = tm2.mapMissionDtoToMission(mission);
 		itimesheetservice.ajouterMission(m);
 		return m.getId();
 	}

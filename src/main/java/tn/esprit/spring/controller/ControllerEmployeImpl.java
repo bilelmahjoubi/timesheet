@@ -25,15 +25,15 @@ public class ControllerEmployeImpl  {
 	IEmployeService employeService;
 
 	private String login; 
-	private String password1; 
+	private String password2; 
 	private Boolean loggedIn1;
 
 	private Employe authenticatedUser = null; 
-	private String prenom1; 
-	private String nom1; 
-	private String email1;
-	private boolean actif1;
-	private Role role1;  
+	private String prenom2; 
+	private String nom2; 
+	private String email2;
+	private boolean actif2;
+	private Role role2;  
 	public Role[] getRoles() { return Role.values(); }
 
 	private List<Employe> employes; 
@@ -47,7 +47,7 @@ public class ControllerEmployeImpl  {
 	public String doLogin() {
 
 		String navigateTo = "null";
-		authenticatedUser=employeService.authenticate(login, password1);
+		authenticatedUser=employeService.authenticate(login, password2);
 		if (authenticatedUser != null && authenticatedUser.getRole() == Role.ADMINISTRATEUR) {
 			navigateTo = "/pages/admin/welcome.xhtml?faces-redirect=true";
 			loggedIn1 = true;
@@ -75,7 +75,7 @@ public class ControllerEmployeImpl  {
 
 		if (authenticatedUser==null || !loggedIn1) return loginUrl;
 
-		employeService.addOrUpdateEmploye(new Employe(nom1, prenom1, email1, password1, actif1, role1)); 
+		employeService.addOrUpdateEmploye(new Employe(nom2, prenom2, email2, password2, actif2, role2)); 
 		return "null"; 
 	}  
 
@@ -93,12 +93,12 @@ public class ControllerEmployeImpl  {
 		if (authenticatedUser==null || !loggedIn1) return loginUrl;
 
 
-		this.setPrenom1(empl.getPrenom());
-		this.setNom1(empl.getNom());
-		this.setActif1(empl.isActif()); 
-		this.setEmail1(empl.getEmail());
-		this.setRole1(empl.getRole());
-		this.setPassword1(empl.getPassword());
+		this.setPrenom2(empl.getPrenom());
+		this.setNom2(empl.getNom());
+		this.setActif2(empl.isActif()); 
+		this.setEmail2(empl.getEmail());
+		this.setRole2(empl.getRole());
+		this.setPassword2(empl.getPassword());
 		this.setEmployeIdToBeUpdated(empl.getId());
 
 		return navigateTo; 
@@ -111,7 +111,7 @@ public class ControllerEmployeImpl  {
 		
 		if (authenticatedUser==null || !loggedIn1) return loginUrl;
 
-		employeService.addOrUpdateEmploye(new Employe(employeIdToBeUpdated, nom1, prenom1, email1, password1, actif1, role1)); 
+		employeService.addOrUpdateEmploye(new Employe(employeIdToBeUpdated, nom2, prenom2, email2, password2, actif2, role2)); 
 
 		return navigateTo; 
 
@@ -133,12 +133,12 @@ public class ControllerEmployeImpl  {
 		this.login = login;
 	}
 
-	public String getPassword1() {
-		return password1;
+	public String getPassword2() {
+		return password2;
 	}
 
-	public void setPassword1(String password1) {
-		this.password1 = password1;
+	public void setPassword2(String password2) {
+		this.password2 = password2;
 	}
 
 	public Boolean getLoggedIn1() {
@@ -157,44 +157,44 @@ public class ControllerEmployeImpl  {
 		this.authenticatedUser = authenticatedUser;
 	}
 
-	public String getPrenom1() {
-		return prenom1;
+	public String getPrenom2() {
+		return prenom2;
 	}
 
-	public void setPrenom1(String prenom1) {
-		this.prenom1 = prenom1;
+	public void setPrenom2(String prenom2) {
+		this.prenom2 = prenom2;
 	}
 
-	public String getNom1() {
-		return nom1;
+	public String getNom2() {
+		return nom2;
 	}
 
-	public void setNom1(String nom1) {
-		this.nom1 = nom1;
+	public void setNom2(String nom2) {
+		this.nom2 = nom2;
 	}
 
-	public String getEmail1() {
-		return email1;
+	public String getEmail2() {
+		return email2;
 	}
 
-	public void setEmail1(String email1) {
-		this.email1 = email1;
+	public void setEmail2(String email2) {
+		this.email2 = email2;
 	}
 
-	public boolean isActif1() {
-		return actif1;
+	public boolean isActif2() {
+		return actif2;
 	}
 
-	public void setActif1(boolean actif1) {
-		this.actif1 = actif1;
+	public void setActif2(boolean actif2) {
+		this.actif2 = actif2;
 	}
 
-	public Role getRole1() {
-		return role1;
+	public Role getRole2() {
+		return role2;
 	}
 
-	public void setRole1(Role role1) {
-		this.role1 = role1;
+	public void setRole2(Role role2) {
+		this.role2 = role2;
 	}
 
 	public List<Employe> getEmployes() {
@@ -219,8 +219,9 @@ public class ControllerEmployeImpl  {
 
 	public void setLoginUrl(String loginUrl) {
 		this.loginUrl = loginUrl;
-	} 
+	}
 
+	
 
 	
 

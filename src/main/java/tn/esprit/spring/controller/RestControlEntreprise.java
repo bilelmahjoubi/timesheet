@@ -32,13 +32,13 @@ public class RestControlEntreprise {
 	@Autowired
 	ITimesheetService itimesheetservice;
 	@Autowired
-	TimesheetMapper tm;
+	TimesheetMapper tm1;
 	
 	// Ajouter Entreprise : http://localhost:8081/SpringMVC/servlet/ajouterEntreprise
 	@PostMapping("/ajouterEntreprise")
 	@ResponseBody
 	public int ajouterEntreprise(@RequestBody EntrepriseDTO ssiiConsulting) {
-		Entreprise e = tm.mapEntrepriseDtoToEntreprise(ssiiConsulting);
+		Entreprise e = tm1.mapEntrepriseDtoToEntreprise(ssiiConsulting);
 		ientrepriseservice.ajouterEntreprise(e);
 		return e.getId();
 	}
@@ -69,7 +69,7 @@ public class RestControlEntreprise {
  	@PostMapping("/ajouterDepartement")
  	@ResponseBody
 	public int ajouterDepartement(@RequestBody DepartementDTO dep) {
- 		Departement d = tm.mapDepartementDtoToDepartement(dep);
+ 		Departement d = tm1.mapDepartementDtoToDepartement(dep);
 		return ientrepriseservice.ajouterDepartement(d);
 	}
 	
