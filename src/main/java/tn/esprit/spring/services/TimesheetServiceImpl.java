@@ -1,8 +1,8 @@
 package tn.esprit.spring.services;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,14 +37,20 @@ public class TimesheetServiceImpl implements ITimesheetService {
 	}
     
 	public void affecterMissionADepartement(int missionId, int depId) {
-		Mission mission = missionRepository.findById(missionId).orElse(null);
-		Departement dep = deptRepoistory.findById(depId).orElse(null);
-		if(mission!=null) {
-			mission.setDepartement(dep);
-
-		}
-		missionRepository.save(mission);
 		
+		Optional<Mission> value= missionRepository.findById(missionId);
+		Optional<Departement> value1 =deptRepoistory.findById(depId);
+		
+		if(value.isPresent() && value1.isPresent()) {
+		
+			
+				Departement dep=value1.get();
+				Mission mission=value.get();  
+				 mission.setDepartement(dep);
+			
+		
+		missionRepository.save(mission);}
+		    
 	}
 
 	public void ajouterTimesheet(int missionId, int employeId, Date dateDebut, Date dateFin) {

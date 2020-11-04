@@ -38,7 +38,7 @@ public class EmployeServiceImplTest {
 	
 	@Test
 	public void testGetAllEmployes() {
-		assertEquals(20, iEmployeService.getAllEmployes().size());
+		assertEquals(47, iEmployeService.getAllEmployes().size());
 	}
 	
 	@Test

@@ -3,7 +3,10 @@ package tn.esprit.spring.services;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +35,8 @@ public class EmployeServiceImpl implements IEmployeService {
 	ContratRepository contratRepoistory;
 	@Autowired
 	TimesheetRepository timesheetRepository;
+	
+	private static final Logger l = LogManager.getLogger(EmployeServiceImpl.class);
 
 	@Override
 	public Employe authenticate(String login, String password) {
@@ -98,12 +103,21 @@ public class EmployeServiceImpl implements IEmployeService {
 	}
 
 	public void affecterContratAEmploye(int contratId, int employeId) {
-		Contrat contratManagedEntity = contratRepoistory.findById(contratId).orElse(null);
-		Employe employeManagedEntity = employeRepository.findById(employeId).orElse(null);
-		if(contratManagedEntity!=null && employeManagedEntity!=null) {
-			contratManagedEntity.setEmploye(employeManagedEntity);
+		Optional<Contrat> valuec = contratRepoistory.findById(contratId); 
+		Optional<Employe> valuee = employeRepository.findById(employeId);
+		
+		if (valuec.isPresent()) {
+			Contrat contrat = valuec.get();
+		
+
+			if (valuee.isPresent()) {
+				Employe empl = valuee.get();
+				
+				contrat .setEmploye(empl);
+				contratRepoistory.save(contrat );
+			}
 		}
-		contratRepoistory.save(contratManagedEntity);
+		l.info("Out of  ContratEmploye. "); 
 
 	}
 

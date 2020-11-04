@@ -21,11 +21,13 @@ public class TimesheetApplication {
 
 	public static void main(String[] args) {SpringApplication.run(TimesheetApplication.class, args);}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Bean
 	public ServletRegistrationBean servletRegistrationBean() {
 		FacesServlet servlet = new FacesServlet();
 		return new ServletRegistrationBean(servlet, "*.jsf"); }
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Bean
 	public FilterRegistrationBean rewriteFilter() {
 		FilterRegistrationBean rwFilter = new FilterRegistrationBean(new RewriteFilter());
@@ -35,6 +37,7 @@ public class TimesheetApplication {
 	}
 
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Bean
 	public FilterRegistrationBean loginFilter() {
 		FilterRegistrationBean registration = new FilterRegistrationBean();
