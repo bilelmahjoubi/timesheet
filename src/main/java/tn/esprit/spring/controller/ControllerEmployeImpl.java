@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.validation.constraints.Pattern;
+
 
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.el.ELBeanName;
@@ -34,7 +34,7 @@ public class ControllerEmployeImpl  {
 	private String login; 
 	private String password; 
 	private Boolean loggedIn;
-
+	
 	private Employe authenticatedUser = null; 
 	private String prenom; 
 	private String nom; 
@@ -47,7 +47,7 @@ public class ControllerEmployeImpl  {
 
 	private Integer employeIdToBeUpdated; // getter et setter
 
-
+String var ="/login.xhtml?faces-redirect=true";
 	public String doLogin() {
 
 		String navigateTo = "null";
@@ -71,13 +71,13 @@ public class ControllerEmployeImpl  {
 	{
 		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 	
-	return "/login.xhtml?faces-redirect=true";
+	return var;
 	}
 
 
 	public String addEmploye() {
 
-		if (authenticatedUser==null || !loggedIn) return "/login.xhtml?faces-redirect=true";
+		if (authenticatedUser==null || !loggedIn) return var;
 
 		employeService.addOrUpdateEmploye(new Employe(nom, prenom, email, password, actif, role)); 
 		return "null"; 
@@ -85,7 +85,7 @@ public class ControllerEmployeImpl  {
 
 	public String removeEmploye(int employeId) {
 		String navigateTo = "null";
-		if (authenticatedUser==null || !loggedIn) return "/login.xhtml?faces-redirect=true";
+		if (authenticatedUser==null || !loggedIn) return var;
 
 		employeService.deleteEmployeById(employeId);
 		return navigateTo; 
@@ -94,7 +94,7 @@ public class ControllerEmployeImpl  {
 	public String displayEmploye(Employe empl) 
 	{
 		String navigateTo = "null";
-		if (authenticatedUser==null || !loggedIn) return "/login.xhtml?faces-redirect=true";
+		if (authenticatedUser==null || !loggedIn) return var;
 
 
 		this.setPrenom(empl.getPrenom());
@@ -113,7 +113,7 @@ public class ControllerEmployeImpl  {
 	{ 
 		String navigateTo = "null";
 		
-		if (authenticatedUser==null || !loggedIn) return "/login.xhtml?faces-redirect=true";
+		if (authenticatedUser==null || !loggedIn) return var;
 
 		employeService.addOrUpdateEmploye(new Employe(employeIdToBeUpdated, nom, prenom, email, password, actif, role)); 
 
@@ -124,42 +124,7 @@ public class ControllerEmployeImpl  {
 
 	// getters and setters 
 
-	public IEmployeService getEmployeService() {
-		return employeService;
-	}
 
-	public void setEmployeService(IEmployeService employeService) {
-		this.employeService = employeService;
-	}
-
-	public String getLogin() {
-		return login;
-	}
-
-	public void setLogin(String login) {
-		this.login = login;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-
-	public List<Employe> getAllEmployes() {
-		return employeService.getAllEmployes();
-	}
-
-	public Boolean getLoggedIn() {
-		return loggedIn;
-	}
-
-	public void setLoggedIn(Boolean loggedIn) {
-		this.loggedIn = loggedIn;
-	}
 
 	public int ajouterEmploye(Employe employe)
 	{
@@ -245,6 +210,46 @@ public class ControllerEmployeImpl  {
 		return employeService.getTimesheetsByMissionAndDate(employe, mission, dateDebut, dateFin);
 	}
 
+	public IEmployeService getEmployeService() {
+		return employeService;
+	}
+
+	public void setEmployeService(IEmployeService employeService) {
+		this.employeService = employeService;
+	}
+
+	public String getLogin() {
+		return login;
+	}
+
+	public void setLogin(String login) {
+		this.login = login;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public Boolean getLoggedIn() {
+		return loggedIn;
+	}
+
+	public void setLoggedIn(Boolean loggedIn) {
+		this.loggedIn = loggedIn;
+	}
+
+	public Employe getAuthenticatedUser() {
+		return authenticatedUser;
+	}
+
+	public void setAuthenticatedUser(Employe authenticatedUser) {
+		this.authenticatedUser = authenticatedUser;
+	}
+
 	public String getPrenom() {
 		return prenom;
 	}
@@ -269,9 +274,6 @@ public class ControllerEmployeImpl  {
 		this.email = email;
 	}
 
-
-
-
 	public boolean isActif() {
 		return actif;
 	}
@@ -289,7 +291,6 @@ public class ControllerEmployeImpl  {
 	}
 
 	public List<Employe> getEmployes() {
-		employes = employeService.getAllEmployes(); 
 		return employes;
 	}
 
@@ -303,14 +304,6 @@ public class ControllerEmployeImpl  {
 
 	public void setEmployeIdToBeUpdated(Integer employeIdToBeUpdated) {
 		this.employeIdToBeUpdated = employeIdToBeUpdated;
-	}
-
-	public Employe getAuthenticatedUser() {
-		return authenticatedUser;
-	}
-
-	public void setAuthenticatedUser(Employe authenticatedUser) {
-		this.authenticatedUser = authenticatedUser;
 	}
 
 }
